@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "checkJs": false,
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+      "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"]
+    }
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
+  }
