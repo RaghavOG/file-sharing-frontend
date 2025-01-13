@@ -6,6 +6,8 @@ import { Input } from "../components/ui/input";
 import { useToast } from "../hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { DownloadIcon, RefreshCw, AlertCircle, UploadIcon, CheckCircle, FileIcon } from 'lucide-react';
+import { Navbar } from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const Download = () => {
   const [fileId, setFileId] = useState('');
@@ -74,6 +76,7 @@ const Download = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-violet-600">
+      <Navbar />
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
         <Card className="w-full max-w-md mx-4 bg-black/30 backdrop-blur-lg border border-purple-500/20 shadow-2xl rounded-xl overflow-hidden hover:border-purple-500/40 transition-all duration-300">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/10 pointer-events-none" />
@@ -161,6 +164,7 @@ const Download = () => {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 };

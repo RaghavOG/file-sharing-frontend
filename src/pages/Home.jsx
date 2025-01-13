@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Navbar } from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const Home = () => {
     return (
@@ -24,9 +25,8 @@ export const Home = () => {
             </Link>
           </div>
         </main>
-        <footer className="w-full py-4 text-center border-t border-gray-800">
-          <p className="text-gray-400">&copy; 2024 FileShare. All rights reserved.</p>
-        </footer>
+        
+        <Footer />
       </div>
     );
   };
