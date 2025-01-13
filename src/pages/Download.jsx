@@ -6,7 +6,7 @@ import { Input } from "../components/ui/input";
 import { useToast } from "../hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Navbar } from '../components/Navbar';
-import { DownloadIcon, RefreshCw, AlertCircle } from 'lucide-react';
+import { DownloadIcon, RefreshCw, AlertCircle, UploadIcon, CheckCircle, FileIcon } from 'lucide-react';
 
 const Download = () => {
   const [fileId, setFileId] = useState('');
@@ -28,7 +28,7 @@ const Download = () => {
         navigate('/download');
       }
     }
-  }, [id, navigate, toast ]);
+  }, [id, navigate, toast]);
 
   const handleDownload = async (id) => {
     setIsLoading(true);
@@ -83,20 +83,24 @@ const Download = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Enter file ID (numbers only)"
-                value={fileId}
-                onChange={handleInputChange}
-                className="w-full p-2 bg-transparent border-gray-700 text-white placeholder-gray-400 focus:border-purple-500"
-              />
-              <Button
-                type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
-              >
-                <DownloadIcon className="mr-2" size={20} />
-                Fetch File
-              </Button>
+              {!downloadUrl && (
+                <>
+                  <Input
+                    type="text"
+                    placeholder="Enter file ID (numbers only)"
+                    value={fileId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-transparent border-gray-700 text-white placeholder-gray-400 focus:border-purple-500"
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    <DownloadIcon className="mr-2" size={20} />
+                    Fetch File
+                  </Button>
+                </>
+              )}
             </form>
 
             {isLoading && (
@@ -114,7 +118,15 @@ const Download = () => {
             )}
 
             {downloadUrl && (
-              <div className="mt-4">
+              <div className="mt-4 space-y-4">
+                <div className="flex items-center justify-center space-x-2 text-white bg-green-600 bg-opacity-20 p-3 rounded-md animate-fade-in">
+                  <CheckCircle className="text-green-500" size={24} />
+                  <p className="font-semibold">File ID: {fileId}</p>
+                </div>
+                <div className="flex items-center justify-center space-x-2 text-white">
+                  <FileIcon className="animate-pulse" size={24} />
+                  <p>Your file is ready for download!</p>
+                </div>
                 <Button
                   onClick={() => window.location.href = downloadUrl}
                   className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
@@ -122,6 +134,25 @@ const Download = () => {
                   <DownloadIcon className="mr-2" size={20} />
                   Download File
                 </Button>
+                <div className="flex space-x-2">
+                  <Button
+                    onClick={() => {
+                      setDownloadUrl('');
+                      setFileId('');
+                      navigate('/download');
+                    }}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    Download Other File
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/upload')}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                  >
+                    <UploadIcon className="mr-2" size={20} />
+                    Upload File
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
