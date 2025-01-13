@@ -8,7 +8,9 @@ import { useToast } from "../hooks/use-toast"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Navbar } from '@/components/Navbar'
-import { UploadIcon, CheckCircle, Copy } from 'lucide-react'
+import { UploadIcon, CheckCircle, Copy, Lock } from 'lucide-react'
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import Footer from '@/components/Footer'
 
 export const Upload = () => {
@@ -17,10 +19,11 @@ export const Upload = () => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadSuccess, setUploadSuccess] = useState(false)
   const [fileId, setFileId] = useState('')
-  const [downloadLink, setDownloadLink] = useState('')
+  const [isPasswordProtected, setIsPasswordProtected] = useState(false)
+  const [password, setPassword] = useState('')
   const { toast } = useToast()
 
-  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB (matching backend)
 
   const onFileChange = (e) => {
     if (e.target.files) {
@@ -35,13 +38,21 @@ export const Upload = () => {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast({ title: 'File size exceeds 10MB!', variant: 'destructive' });
+      toast({ title: 'File size exceeds 100MB!', variant: 'destructive' });
+      return;
+    }
+
+    if (isPasswordProtected && !password) {
+      toast({ title: 'Please enter a password!', variant: 'destructive' });
       return;
     }
 
     setIsUploading(true)
     const formData = new FormData()
     formData.append('file', file)
+    if (isPasswordProtected) {
+      formData.append('password', password)
+    }
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/upload`, formData, {
@@ -50,14 +61,16 @@ export const Upload = () => {
       
       if (response.data.success) {
         setUploadSuccess(true)
-        setDownloadLink(response.data.downloadUrl)
         setFileId(response.data.shortFileId)
-        toast({ title: 'File uploaded successfully!', variant: 'success' })
+        toast({ 
+          title: response.data.message,
+          variant: 'success' 
+        })
       }
     } catch (error) {
       if (error.response) {
         if (error.response.status === 413) {
-          toast({ title: 'File too large! Please upload a file smaller than 10MB.', variant: 'destructive' });
+          toast({ title: 'File too large! Please upload a file smaller than 100MB.', variant: 'destructive' });
         } else if (error.response.status === 400) {
           toast({ title: error.response.data.message, variant: 'destructive' });
         } else {
@@ -75,7 +88,8 @@ export const Upload = () => {
     setFile(null)
     setUploadSuccess(false)
     setFileId('')
-    setDownloadLink('')
+    setPassword('')
+    setIsPasswordProtected(false)
     reset()
   }
 
@@ -116,6 +130,31 @@ export const Upload = () => {
                   {errors.file && <p className="text-red-400 text-sm mt-1">{errors.file.message}</p>}
                 </div>
 
+                <div className="flex items-center justify-between space-x-2 p-4 rounded-lg bg-white/5">
+                  <div className="flex items-center space-x-2">
+                    <Lock size={20} className="text-purple-400" />
+                    <Label htmlFor="password-protection" className="text-white">Password Protection</Label>
+                  </div>
+                  <Switch
+                    id="password-protection"
+                    checked={isPasswordProtected}
+                    onCheckedChange={setIsPasswordProtected}
+                    className="data-[state=checked]:bg-purple-600"
+                  />
+                </div>
+
+                {isPasswordProtected && (
+                  <div className="space-y-2">
+                    <Input
+                      type="password"
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-white/5 border-gray-700 text-white"
+                    />
+                  </div>
+                )}
+
                 <Button 
                   type="submit"
                   disabled={isUploading}
@@ -153,13 +192,6 @@ export const Upload = () => {
                     <Copy size={20} />
                   </Button>
                 </div>
-                <Button 
-                  onClick={() => window.location.href = downloadLink}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-200 
-                  ease-in-out transform hover:scale-102 hover:shadow-lg hover:shadow-green-500/20 rounded-lg"
-                >
-                  Download File
-                </Button>
                 <Button 
                   onClick={resetUpload}
                   className="w-full border-2 border-white/20 hover:border-white/40 text-white hover:bg-white/10 
