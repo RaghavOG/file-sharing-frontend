@@ -5,7 +5,6 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useToast } from "../hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Navbar } from '../components/Navbar';
 import { DownloadIcon, RefreshCw, AlertCircle, UploadIcon, CheckCircle, FileIcon } from 'lucide-react';
 
 const Download = () => {
@@ -75,13 +74,17 @@ const Download = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-violet-600">
-      <Navbar />
-      <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-black bg-opacity-30 backdrop-blur-md border border-gray-800 shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-white text-center">File Download</CardTitle>
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <Card className="w-full max-w-md mx-4 bg-black/30 backdrop-blur-lg border border-purple-500/20 shadow-2xl rounded-xl overflow-hidden hover:border-purple-500/40 transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/10 pointer-events-none" />
+          <CardHeader className="relative">
+            <CardTitle className="text-2xl sm:text-3xl font-bold text-white text-center">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                File Download
+              </span>
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               {!downloadUrl && (
                 <>
@@ -90,11 +93,11 @@ const Download = () => {
                     placeholder="Enter file ID (numbers only)"
                     value={fileId}
                     onChange={handleInputChange}
-                    className="w-full p-2 bg-transparent border-gray-700 text-white placeholder-gray-400 focus:border-purple-500"
+                    className="w-full p-3 bg-white/5 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500/50 rounded-lg transition-all duration-200"
                   />
                   <Button
                     type="submit"
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-102 hover:shadow-lg hover:shadow-purple-500/20 rounded-lg"
                   >
                     <DownloadIcon className="mr-2" size={20} />
                     Fetch File
@@ -105,49 +108,49 @@ const Download = () => {
 
             {isLoading && (
               <div className="mt-4 text-center">
-                <RefreshCw className="animate-spin text-white mx-auto" size={24} />
-                <p className="text-white mt-2">Fetching file...</p>
+                <RefreshCw className="animate-spin text-purple-400 mx-auto" size={24} />
+                <p className="text-white/80 mt-2">Fetching file...</p>
               </div>
             )}
 
             {fileNotFound && (
-              <div className="mt-4 text-center text-red-500">
-                <AlertCircle className="mx-auto" size={24} />
+              <div className="mt-4 text-center text-red-400">
+                <AlertCircle className="mx-auto animate-pulse" size={24} />
                 <p className="mt-2">File not found. Please check the ID and try again.</p>
               </div>
             )}
 
             {downloadUrl && (
               <div className="mt-4 space-y-4">
-                <div className="flex items-center justify-center space-x-2 text-white bg-green-600 bg-opacity-20 p-3 rounded-md animate-fade-in">
-                  <CheckCircle className="text-green-500" size={24} />
+                <div className="flex items-center justify-center space-x-2 text-white bg-green-500/10 p-4 rounded-lg backdrop-blur-sm animate-fade-in border border-green-500/20">
+                  <CheckCircle className="text-green-400" size={24} />
                   <p className="font-semibold">File ID: {fileId}</p>
                 </div>
-                <div className="flex items-center justify-center space-x-2 text-white">
-                  <FileIcon className="animate-pulse" size={24} />
+                <div className="flex items-center justify-center space-x-2 text-white/90">
+                  <FileIcon className="animate-pulse text-blue-400" size={24} />
                   <p>Your file is ready for download!</p>
                 </div>
                 <Button
                   onClick={() => window.location.href = downloadUrl}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-200 ease-in-out transform hover:scale-102 hover:shadow-lg hover:shadow-green-500/20 rounded-lg"
                 >
                   <DownloadIcon className="mr-2" size={20} />
                   Download File
                 </Button>
-                <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button
                     onClick={() => {
                       setDownloadUrl('');
                       setFileId('');
                       navigate('/download');
                     }}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 ease-in-out transform hover:scale-102 hover:shadow-lg hover:shadow-blue-500/20 rounded-lg"
                   >
                     Download Other File
                   </Button>
                   <Button
                     onClick={() => navigate('/upload')}
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200 ease-in-out transform hover:scale-102 hover:shadow-lg hover:shadow-purple-500/20 rounded-lg"
                   >
                     <UploadIcon className="mr-2" size={20} />
                     Upload File
@@ -163,4 +166,3 @@ const Download = () => {
 };
 
 export default Download;
-
